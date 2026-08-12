@@ -1,133 +1,105 @@
-# Sistem Manajemen Kasus Pidsus
+# ⚖️ Sistem Manajemen Kasus Pidsus (Kejaksaan Negeri Salatiga)
 
-Aplikasi manajemen kasus tindak pidana khusus (Pidsus) berbasis web, dibangun dengan ASP.NET Core Web API, PostgreSQL, dan React. Mencakup pengelolaan data kasus, tersangka, barang bukti, tahapan prosedural, serta dashboard analitik.
+![.NET Backend CI](https://github.com/oktaviannalle/pidsus-case-management/actions/workflows/dotnet-build.yml/badge.svg)
+![React Frontend CI](https://github.com/oktaviannalle/pidsus-case-management/actions/workflows/react-build.yml/badge.svg)
+![License](https://img.shields.io/badge/License-MIT-emerald.svg)
+![Architecture](https://img.shields.io/badge/Architecture-Clean%20Monorepo-blue.svg)
 
-> ⚠️ **Disclaimer:** Project ini adalah rekonstruksi personal yang terinspirasi dari pengalaman magang penulis di divisi Pidsus, Kejaksaan Negeri Salatiga. Seluruh data yang ditampilkan (nomor perkara, nama, kasus) adalah **data fiktif/dummy** untuk keperluan demonstrasi portofolio. Ini bukan sistem resmi milik instansi manapun.
+> ⚠️ **Disclaimer:** Project ini adalah rekonstruksi portofolio personal yang terinspirasi dari pengalaman magang penulis di divisi Pidsus, Kejaksaan Negeri Salatiga (Februari–Mei 2019). Seluruh data yang ditampilkan (nomor perkara, nama, kasus) adalah **data fiktif/dummy** untuk keperluan demonstrasi portofolio.
 
-## Screenshot
+---
 
-### Daftar Kasus
+## 🌟 Fitur Utama (Enterprise Features)
 
-![Daftar Kasus](screenshots/cases-list.png)
+- **📌 Manajemen Perkara Pidsus:** CRUD data kasus (nomor perkara PRINT, judul, jenis tindak pidana, status persuratan, estimasi kerugian negara, dan nilai aset disita).
+- **⚖️ Tahapan Persuratan Prosedural Kejaksaan:** Tracking tahapan legal persuratan (Penyelidikan P-2, Penyidikan P-16, Berkas Lengkap P-21, Penuntutan P-31, dan Eksekusi P-48).
+- **🛡️ Role-Based Access Control (RBAC):** Autentikasi multi-peran dengan hak akses terspesialisasi untuk **Kepala Kejaksaan Negeri (Kajari)**, **Admin Seksi Pidsus**, **Ketua Tim Penyidik**, dan **Tamu (Guest Viewer)**.
+- **💰 Pelacakan Asset Recovery & Kerugian Negara:** Monitoring estimasi kerugian keuangan negara vs. uang pengganti/aset disita yang berhasil direcovery.
+- **📦 Gudang & Rantai Penjagaan Barang Bukti (*Chain of Custody*):** Manajemen fisik lokasi penyimpanan barang bukti (Rak/Gudang BB Kejari Salatiga).
+- **🖨️ Generator Laporan Eksekutif Bulanan:** Format cetak laporan rekapitulasi perkara resmi lengkap dengan Kop Surat Kejaksaan Negeri Salatiga dan lembar pengesahan Kajari.
+- **⚡ Hybrid Fallback Engine:** Sistem dapat beroperasi secara penuh baik menggunakan **ASP.NET Core REST API (PostgreSQL)** maupun **Hybrid Demo Fallback State** (siap untuk live hosting di Vercel/Netlify).
 
-### Dashboard Analitik
+---
 
-![Dashboard Analitik](screenshots/dashboard-analytics.png)
+## 🏛️ Arsitektur Monorepo
 
-## Fitur Utama
+Repository ini disusun mengikuti standar **Enterprise Clean Architecture Monorepo**:
 
-- CRUD data kasus (nomor perkara, judul, jenis tindak pidana, status)
-- Manajemen tersangka per kasus
-- Manajemen barang bukti (evidence tracking) per kasus
-- Tahapan prosedural kasus (Penyelidikan → Penyidikan → Penuntutan → Persidangan)
-- Dashboard analitik dengan agregasi data (jumlah kasus per status & jenis tindak pidana) menggunakan LINQ GroupBy
-- Navigasi single-page application (SPA) tanpa reload
+```
+pidsus-case-management/
+├── .github/workflows/         # CI/CD Workflows (GitHub Actions)
+├── docs/                      # Technical Documentation & User Guides
+│   ├── ARCHITECTURE.md        # Architecture & Layering Specs
+│   └── USER_GUIDE.md          # User Guide & Login Credentials
+├── backend/                   # ASP.NET Core 8 Web API
+│   ├── Controllers/           # API Presentation Layer
+│   ├── Core/Models/           # Domain Entities (Case, Suspect, Evidence)
+│   └── Data/                  # DbContext & Automatic Initializer Seeder
+└── frontend/                  # React (Vite) Single Page Application
+    ├── src/
+    │   ├── components/layout/ # Sidebar, Navbar
+    │   ├── components/modals/ # CaseDetailModal, CaseFormModal
+    │   ├── components/ui/     # StatCard, ProtectedRoute
+    │   ├── context/           # AuthContext & Session Provider
+    │   ├── pages/             # Dashboard, Cases, Evidences, Reports, Login
+    │   └── services/          # API Services & Client Integration Layer
+    └── public/                # Logo Kejaksaan RI & Public Assets
+```
 
-## Tech Stack
+---
 
-**Backend**
+## 💻 Tech Stack
 
-- ASP.NET Core Web API (.NET 8)
-- Entity Framework Core
-- PostgreSQL
-- Swagger / OpenAPI
+### **Back-End**
+- **Framework:** ASP.NET Core Web API (.NET 8.0)
+- **ORM:** Entity Framework Core 8.0
+- **Database:** PostgreSQL 15+ (Npgsql Provider)
+- **API Spec:** OpenAPI / Swagger UI
 
-**Frontend**
+### **Front-End**
+- **Framework:** React 19 (Vite Build Tool)
+- **Design System:** Custom Adhyaksa Corporate CSS Tokens
+- **Iconography:** Lucide React
+- **Data Visualizations:** Recharts
+- **Routing & Auth:** React Router DOM v7 & Auth Context API
 
-- React (Vite)
-- React Router DOM
-- Axios
-- Recharts
+---
 
-## Arsitektur
-
-Project ini mengikuti pola **layered architecture** di sisi backend:
-
-React Frontend → Controllers → DbContext (EF Core) → PostgreSQL
-
-- `Models/` — struktur entitas (Case, Suspect, Evidence, CaseStage)
-- `Data/` — DbContext, jembatan ke database
-- `Controllers/` — REST API endpoints
-- `DTOs/` — kontrak data masuk/keluar API
-
-## Cara Menjalankan Project
-
-### Prasyarat
-
-- .NET SDK 8.0+
-- PostgreSQL 15+
-- Node.js 18+
+## 🚀 Cara Menjalankan Project Lokal
 
 ### 1. Clone repository
-
 ```bash
 git clone https://github.com/oktaviannalle/pidsus-case-management.git
 cd pidsus-case-management
 ```
 
-### 2. Setup Backend
-
+### 2. Menjalankan Frontend
 ```bash
-cd PidsusAPI
-dotnet restore
-```
-
-Buat database:
-
-```sql
-CREATE DATABASE pidsus_db;
-```
-
-Buat file `appsettings.Development.json` (tidak ikut di-commit, harus dibuat manual), isi:
-
-```json
-{
-  "ConnectionStrings": {
-    "DefaultConnection": "Host=localhost;Port=5432;Database=pidsus_db;Username=postgres;Password="
-  }
-}
-```
-
-Jalankan migration & server:
-
-```bash
-dotnet ef database update
-dotnet run
-```
-
-Backend jalan di `http://localhost:5118` (cek port persis di terminal), Swagger di `/swagger`.
-
-### 3. Setup Frontend
-
-```bash
-cd ../pidsus-frontend
+cd frontend
 npm install
 npm run dev
 ```
+Aplikasi berjalan di `http://localhost:5173`.
 
-Frontend jalan di `http://localhost:5173`.
+### 3. Menjalankan Backend (Opsional)
+```bash
+cd ../backend
+dotnet restore
+dotnet run
+```
+Backend berjalan di `http://localhost:5118`, Swagger UI di `/swagger`.
 
-## API Endpoints
+---
 
-| Method              | Endpoint                 | Deskripsi               |
-| ------------------- | ------------------------ | ----------------------- |
-| GET                 | `/api/cases`             | Daftar semua kasus      |
-| GET                 | `/api/cases/{id}`        | Detail satu kasus       |
-| POST                | `/api/cases`             | Buat kasus baru         |
-| PUT                 | `/api/cases/{id}`        | Update kasus            |
-| DELETE              | `/api/cases/{id}`        | Hapus kasus             |
-| GET/POST/PUT/DELETE | `/api/suspects`          | CRUD tersangka          |
-| GET/POST/PUT/DELETE | `/api/evidences`         | CRUD barang bukti       |
-| GET/POST/PUT/DELETE | `/api/casestages`        | CRUD tahapan kasus      |
-| GET                 | `/api/dashboard/summary` | Statistik agregat kasus |
+## 📖 Dokumentasi Lengkap
 
-## Pengembangan Selanjutnya
+- 📌 [Panduan Arsitektur & Layering System (`docs/ARCHITECTURE.md`)](file:///c:/Users/User/Documents/pidsus-case-management/docs/ARCHITECTURE.md)
+- 📌 [Panduan Penggunaan Sistem (`docs/USER_GUIDE.md`)](file:///c:/Users/User/Documents/pidsus-case-management/docs/USER_GUIDE.md)
 
-- Autentikasi & otorisasi (JWT, role Admin/Jaksa)
-- Pagination & filter/search
-- Deployment ke Railway/Render (backend) & Vercel (frontend)
+---
 
-## Kontak
+## 👨‍💻 Penulis & Kontak
 
-**Oktavian Alle**
-[LinkedIn](https://linkedin.com/in/oktaviannalle) · oktaviannalle@gmail.com
+**Oktavian Alle, S.H.**  
+[LinkedIn](https://linkedin.com/in/oktaviannalle) · oktaviannalle@gmail.com  
+*Rekonstruksi Pengalaman Magang Seksi Pidsus, Kejaksaan Negeri Salatiga*
