@@ -1,8 +1,10 @@
 import { useEffect, useState } from "react";
-import { Printer, Download, Shield, FileText } from "lucide-react";
+import { Printer, Eye } from "lucide-react";
 import { getCases } from "../api/caseService";
+import { useAuth } from "../context/AuthContext";
 
 function ReportsPage() {
+  const { user } = useAuth();
   const [cases, setCases] = useState([]);
 
   useEffect(() => {
@@ -21,7 +23,7 @@ function ReportsPage() {
   return (
     <div className="animate-fade-in">
       {/* Action Header */}
-      <div className="page-header" style={{ media: "print" }}>
+      <div className="page-header">
         <div>
           <h1 className="page-title">Laporan Rekapitulasi Perkara</h1>
           <p className="page-subtitle">
@@ -29,11 +31,31 @@ function ReportsPage() {
           </p>
         </div>
 
-        <div style={{ display: "flex", gap: "0.75rem" }}>
-          <button className="btn btn-primary" onClick={handlePrint}>
-            <Printer size={16} />
-            <span>Cetak / Simpan PDF</span>
-          </button>
+        <div style={{ display: "flex", gap: "0.75rem", alignItems: "center" }}>
+          {user?.isReadOnly ? (
+            <div
+              style={{
+                backgroundColor: "#fffbeb",
+                color: "#b45309",
+                border: "1px solid #fde68a",
+                padding: "0.4rem 0.875rem",
+                borderRadius: "8px",
+                fontSize: "0.8rem",
+                fontWeight: 600,
+                display: "flex",
+                alignItems: "center",
+                gap: "0.4rem",
+              }}
+            >
+              <Eye size={14} />
+              <span>Mode Peninjau Tamu (Read-Only)</span>
+            </div>
+          ) : (
+            <button className="btn btn-primary" onClick={handlePrint}>
+              <Printer size={16} />
+              <span>Cetak / Simpan PDF</span>
+            </button>
+          )}
         </div>
       </div>
 

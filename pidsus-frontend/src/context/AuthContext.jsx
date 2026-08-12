@@ -40,8 +40,9 @@ export const DEMO_USERS = {
     nip: "GUEST-DEMO-VISITOR",
     password: "",
     avatarRole: "TAMU",
-    allowedPages: ["/dashboard", "/cases"],
+    allowedPages: ["/dashboard", "/cases", "/reports"],
     canRegister: false,
+    isReadOnly: true,
   },
 };
 

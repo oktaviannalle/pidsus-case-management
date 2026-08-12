@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { User, Lock, ArrowRight, UserCheck, AlertCircle, Info } from "lucide-react";
+import { User, Lock, ArrowRight, UserCheck, AlertCircle } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
 
 function LoginPage() {
@@ -11,7 +11,6 @@ function LoginPage() {
   const [username, setUsername] = useState(DEMO_USERS.admin.nip);
   const [password, setPassword] = useState("");
   const [errorMsg, setErrorMsg] = useState("");
-  const [showHint, setShowHint] = useState(true);
 
   // Sync NIP input when role dropdown changes
   useEffect(() => {
@@ -171,43 +170,8 @@ function LoginPage() {
             </button>
           </form>
 
-          {/* Credentials Info Helper for Testing / Recruiters */}
-          <div
-            style={{
-              marginTop: "1.25rem",
-              backgroundColor: "#f8fafc",
-              border: "1px solid #e2e8f0",
-              borderRadius: "10px",
-              padding: "0.875rem",
-              fontSize: "0.75rem",
-              color: "var(--text-secondary)",
-            }}
-          >
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", fontWeight: 700, color: "var(--text-primary)", marginBottom: "0.35rem" }}>
-              <div style={{ display: "flex", alignItems: "center", gap: "0.35rem" }}>
-                <Info size={14} color="var(--primary)" />
-                <span>Kredensial Akses Uji Coba:</span>
-              </div>
-              <button
-                type="button"
-                onClick={() => setShowHint(!showHint)}
-                style={{ background: "none", border: "none", color: "var(--primary)", fontSize: "0.7rem", cursor: "pointer", fontWeight: 600 }}
-              >
-                {showHint ? "Sembunyikan" : "Tampilkan"}
-              </button>
-            </div>
-
-            {showHint && (
-              <div style={{ display: "flex", flexDirection: "column", gap: "0.25rem", fontFamily: "var(--font-mono)", marginTop: "0.35rem" }}>
-                <div>• <strong>Admin:</strong> admin123</div>
-                <div>• <strong>Kajari:</strong> kajari123</div>
-                <div>• <strong>Penyidik:</strong> penyidik123</div>
-              </div>
-            )}
-          </div>
-
           {/* Guest Login Divider & Button */}
-          <div style={{ marginTop: "1.25rem", paddingTop: "1rem", borderTop: "1px solid var(--border-color)", textAlign: "center" }}>
+          <div style={{ marginTop: "1.75rem", paddingTop: "1.25rem", borderTop: "1px solid var(--border-color)", textAlign: "center" }}>
             <button
               type="button"
               className="btn btn-outline"
