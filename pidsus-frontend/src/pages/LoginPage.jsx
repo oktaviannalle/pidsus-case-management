@@ -57,22 +57,11 @@ function LoginPage() {
             position: "relative",
           }}
         >
-          <div
-            style={{
-              width: "60px",
-              height: "60px",
-              borderRadius: "16px",
-              backgroundColor: "var(--primary)",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              margin: "0 auto 1rem auto",
-              boxShadow: "0 8px 20px rgba(4, 120, 87, 0.5)",
-              border: "1px solid rgba(255,255,255,0.2)",
-            }}
-          >
-            <ShieldAlert size={34} color="#fbbf24" />
-          </div>
+          <img
+            src="/logo-kejaksaan.png"
+            alt="Logo Kejaksaan RI"
+            style={{ width: "70px", height: "70px", objectFit: "contain", margin: "0 auto 1rem auto", display: "block" }}
+          />
 
           <div style={{ fontSize: "0.75rem", fontWeight: 800, color: "var(--accent-gold)", letterSpacing: "0.1em", textTransform: "uppercase" }}>
             KEJAKSAAN NEGERI SALATIGA

@@ -44,21 +44,11 @@ function Sidebar() {
           gap: "0.875rem",
         }}
       >
-        <div
-          style={{
-            width: "44px",
-            height: "44px",
-            borderRadius: "10px",
-            backgroundColor: "var(--primary)",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            boxShadow: "0 4px 10px rgba(4, 120, 87, 0.4)",
-            flexShrink: 0,
-          }}
-        >
-          <ShieldAlert size={26} color="#fbbf24" />
-        </div>
+        <img
+          src="/logo-kejaksaan.png"
+          alt="Logo Kejaksaan RI"
+          style={{ width: "44px", height: "44px", objectFit: "contain", flexShrink: 0 }}
+        />
         <div>
           <div
             style={{

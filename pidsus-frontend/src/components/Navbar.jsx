@@ -1,6 +1,6 @@
-import { Search, Bell, Database, Server, Shield } from "lucide-react";
+import { Search, Bell, Shield } from "lucide-react";
 
-function Navbar({ isMockMode = true }) {
+function Navbar() {
   return (
     <header
       style={{
@@ -52,30 +52,6 @@ function Navbar({ isMockMode = true }) {
 
       {/* Right Header Actions & Status */}
       <div style={{ display: "flex", alignItems: "center", gap: "1.25rem" }}>
-        {/* Backend API Status Indicator */}
-        <div
-          title={
-            isMockMode
-              ? "Backend API offline, berjalan menggunakan data portofolio Pidsus."
-              : "Terhubung langsung dengan ASP.NET Core Web API & PostgreSQL."
-          }
-          style={{
-            display: "flex",
-            alignItems: "center",
-            gap: "0.5rem",
-            padding: "0.35rem 0.75rem",
-            borderRadius: "20px",
-            fontSize: "0.75rem",
-            fontWeight: 600,
-            backgroundColor: isMockMode ? "#fffbeb" : "#ecfdf5",
-            color: isMockMode ? "#b45309" : "#047857",
-            border: `1px solid ${isMockMode ? "#fde68a" : "#a7f3d0"}`,
-          }}
-        >
-          {isMockMode ? <Database size={14} /> : <Server size={14} />}
-          <span>{isMockMode ? "Portofolio Demo Mode" : "PostgreSQL API Live"}</span>
-        </div>
-
         {/* Institutional Motto */}
         <div
           style={{
