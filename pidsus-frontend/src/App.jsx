@@ -1,7 +1,9 @@
+import CasesPage from "./pages/CasesPage";
+
 function App() {
   return (
     <div>
-      <h1>Sistem Manajemen Kasus Pidsus</h1>
+      <CasesPage />
     </div>
   );
 }
