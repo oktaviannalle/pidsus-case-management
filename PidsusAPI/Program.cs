@@ -29,6 +29,20 @@ builder.Services.AddCors(options =>
 
 var app = builder.Build();
 
+using (var scope = app.Services.CreateScope())
+{
+    var services = scope.ServiceProvider;
+    try
+    {
+        var context = services.GetRequiredService<AppDbContext>();
+        DbInitializer.Seed(context);
+    }
+    catch (Exception ex)
+    {
+        Console.WriteLine("Error seeding database: " + ex.Message);
+    }
+}
+
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
