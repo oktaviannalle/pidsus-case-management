@@ -23,11 +23,10 @@ import {
   FileSpreadsheet,
   Building,
 } from "lucide-react";
-import StatCard from "../components/StatCard";
-import CaseDetailModal from "../components/CaseDetailModal";
-import CaseFormModal from "../components/CaseFormModal";
-import { getDashboardSummary, getCases, createCase } from "../api/caseService";
-
+import StatCard from "../components/ui/StatCard";
+import CaseDetailModal from "../components/modals/CaseDetailModal";
+import CaseFormModal from "../components/modals/CaseFormModal";
+import { getDashboardSummary, getCases, createCase } from "../services/caseService";
 import { useAuth } from "../context/AuthContext";
 
 const COLORS = ["#f59e0b", "#3b82f6", "#6366f1", "#8b5cf6", "#10b981", "#ec4899"];

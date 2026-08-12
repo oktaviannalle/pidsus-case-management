@@ -1,8 +1,8 @@
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { AuthProvider } from "./context/AuthContext";
-import ProtectedRoute from "./components/ProtectedRoute";
-import Sidebar from "./components/Sidebar";
-import Navbar from "./components/Navbar";
+import ProtectedRoute from "./components/ui/ProtectedRoute";
+import Sidebar from "./components/layout/Sidebar";
+import Navbar from "./components/layout/Navbar";
 import LoginPage from "./pages/LoginPage";
 import DashboardPage from "./pages/DashboardPage";
 import CasesPage from "./pages/CasesPage";
@@ -17,7 +17,7 @@ function MainLayout() {
 
       {/* Right Main Body */}
       <div className="main-content">
-        <Navbar isMockMode={true} />
+        <Navbar />
 
         <main className="page-body">
           <Routes>

@@ -8,7 +8,7 @@ import {
   Building2,
   LogOut,
 } from "lucide-react";
-import { useAuth } from "../context/AuthContext";
+import { useAuth } from "../../context/AuthContext";
 
 function Sidebar() {
   const { user, logout } = useAuth();

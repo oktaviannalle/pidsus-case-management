@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Package, Building, ShieldCheck, Search, Filter, Warehouse } from "lucide-react";
-import { getCases } from "../api/caseService";
+import { getCases } from "../services/caseService";
 
 function EvidencesPage() {
   const [evidences, setEvidences] = useState([]);

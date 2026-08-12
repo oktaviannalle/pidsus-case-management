@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
-import { Plus, Search, Filter, Eye, Trash2, ShieldAlert } from "lucide-react";
-import { getCases, createCase, deleteCase } from "../api/caseService";
+import { Plus, Search, Filter, Eye, Trash2 } from "lucide-react";
+import { getCases, createCase, deleteCase } from "../services/caseService";
 import { useAuth } from "../context/AuthContext";
-import CaseDetailModal from "../components/CaseDetailModal";
-import CaseFormModal from "../components/CaseFormModal";
+import CaseDetailModal from "../components/modals/CaseDetailModal";
+import CaseFormModal from "../components/modals/CaseFormModal";
 
 function CasesPage() {
   const { user } = useAuth();
@@ -217,14 +217,16 @@ function CasesPage() {
                         <Eye size={14} />
                         <span>Detail</span>
                       </button>
-                      <button
-                        className="btn btn-outline btn-sm"
-                        style={{ color: "#ef4444", borderColor: "#fca5a5" }}
-                        onClick={(e) => handleDeleteCase(c.id, e)}
-                        title="Hapus Registri Perkara"
-                      >
-                        <Trash2 size={14} />
-                      </button>
+                      {user?.canRegister && (
+                        <button
+                          className="btn btn-outline btn-sm"
+                          style={{ color: "#ef4444", borderColor: "#fca5a5" }}
+                          onClick={(e) => handleDeleteCase(c.id, e)}
+                          title="Hapus Registri Perkara"
+                        >
+                          <Trash2 size={14} />
+                        </button>
+                      )}
                     </div>
                   </td>
                 </tr>
