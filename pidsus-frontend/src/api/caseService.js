@@ -32,12 +32,13 @@ export const getCaseById = async (id) => {
 export const getDashboardSummary = async () => {
   try {
     const res = await apiClient.get("/dashboard/summary");
-    if (res.data) {
-      // Enrich backend data with asset recovery metrics if available
+    if (res.data && res.data.totalCases > 0) {
       return {
         data: {
-          ...MOCK_SUMMARY,
-          totalCases: res.data.totalCases || MOCK_SUMMARY.totalCases,
+          totalCases: res.data.totalCases,
+          totalStateLoss: res.data.totalStateLoss || 0,
+          totalRecoveredAmount: res.data.totalRecoveredAmount || 0,
+          totalEvidences: res.data.totalEvidences || 0,
           byStatus: res.data.byStatus || MOCK_SUMMARY.byStatus,
           byCrimeType: res.data.byCrimeType || MOCK_SUMMARY.byCrimeType,
         },
@@ -47,33 +48,53 @@ export const getDashboardSummary = async () => {
   } catch (err) {
     console.warn("Backend API offline, menggunakan summary analitik mock:", err.message);
   }
-  return { data: MOCK_SUMMARY, isMock: true };
+
+  // Calculate dynamic mock summary if backend offline
+  const totalStateLoss = localMockCases.reduce((sum, c) => sum + (Number(c.stateLoss) || 0), 0);
+  const totalRecoveredAmount = localMockCases.reduce((sum, c) => sum + (Number(c.recoveredAmount) || 0), 0);
+  return {
+    data: {
+      ...MOCK_SUMMARY,
+      totalCases: localMockCases.length,
+      totalStateLoss,
+      totalRecoveredAmount,
+    },
+    isMock: true,
+  };
 };
 
 export const createCase = async (caseData) => {
+  const formattedPayload = {
+    caseNumber: caseData.caseNumber,
+    title: caseData.title,
+    crimeType: caseData.crimeType,
+    status: caseData.status || "Penyelidikan",
+    description: caseData.description || "",
+    stateLoss: Number(caseData.stateLoss) || 0,
+    recoveredAmount: Number(caseData.recoveredAmount) || 0,
+    prosecutorTeam: caseData.prosecutorTeam || "Tim Penyidik Pidsus",
+    reportedDate: caseData.reportedDate ? new Date(caseData.reportedDate).toISOString() : new Date().toISOString(),
+  };
+
   try {
-    const res = await apiClient.post("/cases", caseData);
-    return { data: res.data, success: true, isMock: false };
+    const res = await apiClient.post("/cases", formattedPayload);
+    if (res.data) {
+      localMockCases = [res.data, ...localMockCases];
+      return { data: res.data, success: true, isMock: false };
+    }
   } catch (err) {
-    console.warn("Saving to local mock state:", err.message);
-    const newCase = {
-      id: Date.now(),
-      caseNumber: caseData.caseNumber || `PRINT-${Math.floor(Math.random() * 90 + 10)}/M.3.20/Fd.1/2026`,
-      title: caseData.title || "Kasus Pidsus Baru",
-      crimeType: caseData.crimeType || "Tindak Pidana Korupsi",
-      status: caseData.status || "Penyelidikan",
-      description: caseData.description || "",
-      reportedDate: caseData.reportedDate || new Date().toISOString().split("T")[0],
-      stateLoss: Number(caseData.stateLoss) || 0,
-      recoveredAmount: Number(caseData.recoveredAmount) || 0,
-      prosecutorTeam: caseData.prosecutorTeam || "Tim Penyidik Pidsus",
-      suspects: [],
-      evidences: [],
-      caseStages: [{ id: Date.now(), stageName: "Penyelidikan (P-2)", startDate: new Date().toISOString().split("T")[0], status: "Berjalan" }],
-    };
-    localMockCases = [newCase, ...localMockCases];
-    return { data: newCase, success: true, isMock: true };
+    console.warn("Backend API error / fallback to local state:", err.message);
   }
+
+  const newCase = {
+    id: Date.now(),
+    ...formattedPayload,
+    suspects: [],
+    evidences: [],
+    caseStages: [{ id: Date.now(), stageName: "Penyelidikan (P-2)", startDate: new Date().toISOString().split("T")[0], status: "Berjalan" }],
+  };
+  localMockCases = [newCase, ...localMockCases];
+  return { data: newCase, success: true, isMock: true };
 };
 
 export const updateCase = async (id, caseData) => {
@@ -89,9 +110,9 @@ export const updateCase = async (id, caseData) => {
 export const deleteCase = async (id) => {
   try {
     await apiClient.delete(`/cases/${id}`);
-    return { success: true, isMock: false };
   } catch (err) {
-    localMockCases = localMockCases.filter((c) => c.id !== Number(id));
-    return { success: true, isMock: true };
+    console.warn("API delete error:", err.message);
   }
+  localMockCases = localMockCases.filter((c) => c.id !== Number(id));
+  return { success: true, isMock: true };
 };

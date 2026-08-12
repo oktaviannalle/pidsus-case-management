@@ -15,6 +15,9 @@ namespace PidsusAPI.Controllers
         public async Task<IActionResult> GetSummary()
         {
             var totalCases = await _context.Cases.CountAsync();
+            var totalStateLoss = await _context.Cases.SumAsync(c => c.StateLoss);
+            var totalRecoveredAmount = await _context.Cases.SumAsync(c => c.RecoveredAmount);
+            var totalEvidences = await _context.Evidences.CountAsync();
 
             var byStatus = await _context.Cases
                 .GroupBy(c => c.Status)
@@ -26,7 +29,15 @@ namespace PidsusAPI.Controllers
                 .Select(g => new { crimeType = g.Key, count = g.Count() })
                 .ToListAsync();
 
-            return Ok(new { totalCases, byStatus, byCrimeType });
+            return Ok(new
+            {
+                totalCases,
+                totalStateLoss,
+                totalRecoveredAmount,
+                totalEvidences,
+                byStatus,
+                byCrimeType
+            });
         }
     }
 }

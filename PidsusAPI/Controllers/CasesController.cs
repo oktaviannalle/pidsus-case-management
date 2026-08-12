@@ -23,6 +23,7 @@ namespace PidsusAPI.Controllers
                 .Include(c => c.Suspects)
                 .Include(c => c.Evidences)
                 .Include(c => c.CaseStages)
+                .OrderByDescending(c => c.Id)
                 .ToListAsync();
         }
 
@@ -40,18 +41,23 @@ namespace PidsusAPI.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<Case>> CreateCase(Case newCase)
+        public async Task<ActionResult<Case>> CreateCase([FromBody] Case newCase)
         {
+            newCase.ReportedDate = DateTime.SpecifyKind(newCase.ReportedDate == default ? DateTime.UtcNow : newCase.ReportedDate, DateTimeKind.Utc);
+            newCase.CreatedAt = DateTime.UtcNow;
+
             _context.Cases.Add(newCase);
             await _context.SaveChangesAsync();
+
             return CreatedAtAction(nameof(GetCase), new { id = newCase.Id }, newCase);
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateCase(int id, Case updatedCase)
+        public async Task<IActionResult> UpdateCase(int id, [FromBody] Case updatedCase)
         {
             if (id != updatedCase.Id) return BadRequest();
 
+            updatedCase.ReportedDate = DateTime.SpecifyKind(updatedCase.ReportedDate, DateTimeKind.Utc);
             _context.Entry(updatedCase).State = EntityState.Modified;
 
             try

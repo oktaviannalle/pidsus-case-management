@@ -19,7 +19,13 @@ namespace PidsusAPI.Models
 
         public string? Description { get; set; }
 
-        public DateTime ReportedDate { get; set; }
+        public decimal StateLoss { get; set; } = 0;
+
+        public decimal RecoveredAmount { get; set; } = 0;
+
+        public string? ProsecutorTeam { get; set; }
+
+        public DateTime ReportedDate { get; set; } = DateTime.UtcNow;
 
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
