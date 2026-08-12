@@ -1,23 +1,32 @@
-import { BrowserRouter, Routes, Route, Link } from "react-router-dom";
-import CasesPage from "./pages/CasesPage";
+import { BrowserRouter, Routes, Route, Navigate } from "react";
+import Sidebar from "./components/Sidebar";
+import Navbar from "./components/Navbar";
 import DashboardPage from "./pages/DashboardPage";
+import CasesPage from "./pages/CasesPage";
+import EvidencesPage from "./pages/EvidencesPage";
+import ReportsPage from "./pages/ReportsPage";
 
 function App() {
   return (
     <BrowserRouter>
-      <nav style={{ padding: "1rem", borderBottom: "1px solid #444" }}>
-        <Link to="/cases" style={{ marginRight: "1rem" }}>
-          Daftar Kasus
-        </Link>
-        <Link to="/dashboard">Dashboard</Link>
-      </nav>
+      <div className="app-container">
+        {/* Left Adhyaksa Sidebar */}
+        <Sidebar />
 
-      <div style={{ padding: "1rem" }}>
-        <Routes>
-          <Route path="/" element={<CasesPage />} />
-          <Route path="/cases" element={<CasesPage />} />
-          <Route path="/dashboard" element={<DashboardPage />} />
-        </Routes>
+        {/* Right Main Body */}
+        <div className="main-content">
+          <Navbar isMockMode={true} />
+
+          <main className="page-body">
+            <Routes>
+              <Route path="/" element={<Navigate to="/dashboard" replace />} />
+              <Route path="/dashboard" element={<DashboardPage />} />
+              <Route path="/cases" element={<CasesPage />} />
+              <Route path="/evidences" element={<EvidencesPage />} />
+              <Route path="/reports" element={<ReportsPage />} />
+            </Routes>
+          </main>
+        </div>
       </div>
     </BrowserRouter>
   );
