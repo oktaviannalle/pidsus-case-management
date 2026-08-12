@@ -7,9 +7,13 @@ import {
   ShieldAlert,
   UserCheck,
   Building2,
+  LogOut,
 } from "lucide-react";
+import { useAuth } from "../context/AuthContext";
 
 function Sidebar() {
+  const { user, logout } = useAuth();
+
   const navItems = [
     { path: "/dashboard", label: "Dashboard Analitik", icon: LayoutDashboard },
     { path: "/cases", label: "Manajemen Perkara", icon: Briefcase },
@@ -162,7 +166,7 @@ function Sidebar() {
         </div>
       </nav>
 
-      {/* User Profile Card */}
+      {/* User Profile Card & Logout */}
       <div
         style={{
           padding: "1rem 1.25rem",
@@ -170,48 +174,69 @@ function Sidebar() {
           backgroundColor: "rgba(15, 23, 42, 0.8)",
           display: "flex",
           alignItems: "center",
-          gap: "0.75rem",
+          justifyContent: "space-between",
         }}
       >
-        <div
+        <div style={{ display: "flex", alignItems: "center", gap: "0.75rem", overflow: "hidden" }}>
+          <div
+            style={{
+              width: "38px",
+              height: "38px",
+              borderRadius: "50%",
+              backgroundColor: "var(--primary-dark)",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              border: "1px solid var(--primary-light)",
+              flexShrink: 0,
+            }}
+          >
+            <UserCheck size={20} color="#34d399" />
+          </div>
+          <div style={{ overflow: "hidden" }}>
+            <div
+              style={{
+                fontSize: "0.825rem",
+                fontWeight: 700,
+                color: "#ffffff",
+                whiteSpace: "nowrap",
+                overflow: "hidden",
+                textOverflow: "ellipsis",
+              }}
+            >
+              {user?.name || "Oktavian Alle, S.H."}
+            </div>
+            <div
+              style={{
+                fontSize: "0.675rem",
+                color: "var(--accent-gold)",
+                whiteSpace: "nowrap",
+                overflow: "hidden",
+                textOverflow: "ellipsis",
+              }}
+            >
+              {user?.role || "Admin Pidsus"}
+            </div>
+          </div>
+        </div>
+
+        <button
+          onClick={logout}
+          title="Keluar dari Sistem"
           style={{
-            width: "38px",
-            height: "38px",
-            borderRadius: "50%",
-            backgroundColor: "var(--primary-dark)",
+            background: "transparent",
+            border: "none",
+            color: "#94a3b8",
+            cursor: "pointer",
+            padding: "0.35rem",
+            borderRadius: "6px",
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
-            border: "1px solid var(--primary-light)",
           }}
         >
-          <UserCheck size={20} color="#34d399" />
-        </div>
-        <div style={{ overflow: "hidden" }}>
-          <div
-            style={{
-              fontSize: "0.85rem",
-              fontWeight: 700,
-              color: "#ffffff",
-              whiteSpace: "nowrap",
-              overflow: "hidden",
-              textOverflow: "ellipsis",
-            }}
-          >
-            Oktavian Alle, S.H.
-          </div>
-          <div
-            style={{
-              fontSize: "0.7rem",
-              color: "var(--accent-gold)",
-              whiteSpace: "nowrap",
-              overflow: "hidden",
-              textOverflow: "ellipsis",
-            }}
-          >
-            Admin Pidsus / Jaksa Utama
-          </div>
-        </div>
+          <LogOut size={18} />
+        </button>
       </div>
     </aside>
   );
