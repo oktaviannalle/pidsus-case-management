@@ -28,9 +28,12 @@ import CaseDetailModal from "../components/CaseDetailModal";
 import CaseFormModal from "../components/CaseFormModal";
 import { getDashboardSummary, getCases, createCase } from "../api/caseService";
 
+import { useAuth } from "../context/AuthContext";
+
 const COLORS = ["#f59e0b", "#3b82f6", "#6366f1", "#8b5cf6", "#10b981", "#ec4899"];
 
 function DashboardPage() {
+  const { user } = useAuth();
   const [summary, setSummary] = useState(null);
   const [recentCases, setRecentCases] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -85,12 +88,14 @@ function DashboardPage() {
           </p>
         </div>
 
-        <div style={{ display: "flex", gap: "0.75rem" }}>
-          <button className="btn btn-primary" onClick={() => setShowFormModal(true)}>
-            <Plus size={16} />
-            <span>Register Perkara Baru</span>
-          </button>
-        </div>
+        {user?.canRegister && (
+          <div style={{ display: "flex", gap: "0.75rem" }}>
+            <button className="btn btn-primary" onClick={() => setShowFormModal(true)}>
+              <Plus size={16} />
+              <span>Register Perkara Baru</span>
+            </button>
+          </div>
+        )}
       </div>
 
       {/* KPI Stat Cards Grid */}

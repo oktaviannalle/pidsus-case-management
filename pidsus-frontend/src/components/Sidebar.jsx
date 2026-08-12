@@ -4,7 +4,6 @@ import {
   Briefcase,
   Package,
   FileSpreadsheet,
-  ShieldAlert,
   UserCheck,
   Building2,
   LogOut,
@@ -14,12 +13,15 @@ import { useAuth } from "../context/AuthContext";
 function Sidebar() {
   const { user, logout } = useAuth();
 
-  const navItems = [
+  const allNavItems = [
     { path: "/dashboard", label: "Dashboard Analitik", icon: LayoutDashboard },
     { path: "/cases", label: "Manajemen Perkara", icon: Briefcase },
     { path: "/evidences", label: "Gudang Barang Bukti", icon: Package },
     { path: "/reports", label: "Laporan & Rekapitulasi", icon: FileSpreadsheet },
   ];
+
+  const allowedPages = user?.allowedPages || ["/dashboard", "/cases", "/evidences", "/reports"];
+  const visibleNavItems = allNavItems.filter((item) => allowedPages.includes(item.path));
 
   return (
     <aside
@@ -98,7 +100,7 @@ function Sidebar() {
           Menu Utama
         </div>
         <ul style={{ listStyle: "none", display: "flex", flexDirection: "column", gap: "0.375rem" }}>
-          {navItems.map((item) => {
+          {visibleNavItems.map((item) => {
             const Icon = item.icon;
             return (
               <li key={item.path}>

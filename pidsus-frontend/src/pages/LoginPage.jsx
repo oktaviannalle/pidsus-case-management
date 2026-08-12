@@ -1,15 +1,22 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { ShieldAlert, KeyRound, User, Lock, ArrowRight, CheckCircle2 } from "lucide-react";
+import { User, Lock, ArrowRight, UserCheck, Shield } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
 
 function LoginPage() {
   const { login, DEMO_USERS } = useAuth();
   const navigate = useNavigate();
 
-  const [username, setUsername] = useState("199710152021021001");
-  const [password, setPassword] = useState("••••••••");
   const [selectedRole, setSelectedRole] = useState("admin");
+  const [username, setUsername] = useState(DEMO_USERS.admin.nip);
+  const [password, setPassword] = useState("••••••••");
+
+  // Sync NIP input when role dropdown changes
+  useEffect(() => {
+    if (DEMO_USERS[selectedRole]) {
+      setUsername(DEMO_USERS[selectedRole].nip);
+    }
+  }, [selectedRole, DEMO_USERS]);
 
   const handleCustomLogin = (e) => {
     e.preventDefault();
@@ -17,8 +24,8 @@ function LoginPage() {
     navigate("/dashboard");
   };
 
-  const handleQuickLogin = (roleKey) => {
-    login(roleKey);
+  const handleGuestLogin = () => {
+    login("tamu");
     navigate("/dashboard");
   };
 
@@ -33,7 +40,6 @@ function LoginPage() {
         alignItems: "center",
         justifyContent: "center",
         padding: "1.5rem",
-        position: "relative",
       }}
     >
       <div
@@ -78,7 +84,21 @@ function LoginPage() {
         <div style={{ padding: "2rem" }}>
           <form onSubmit={handleCustomLogin}>
             <div className="form-group">
-              <label className="form-label">NIP / ID Jaksa</label>
+              <label className="form-label">Pilih Peran Akses / Jabatan</label>
+              <select
+                className="form-control"
+                value={selectedRole}
+                onChange={(e) => setSelectedRole(e.target.value)}
+                style={{ fontWeight: 600, color: "var(--primary-dark)" }}
+              >
+                <option value="kajari">Kepala Kejaksaan Negeri (Kajari) - Akses Seluruh Halaman</option>
+                <option value="admin">Admin Seksi Pidsus - Akses Dashboard, Perkara & BB</option>
+                <option value="penyidik">Ketua Tim Penyidik P-16 - Akses Dashboard, Perkara & BB</option>
+              </select>
+            </div>
+
+            <div className="form-group">
+              <label className="form-label">NIP / ID Aparat Kejaksaan</label>
               <div style={{ position: "relative" }}>
                 <User size={18} style={{ position: "absolute", left: "12px", top: "50%", transform: "translateY(-50%)", color: "var(--text-muted)" }} />
                 <input
@@ -107,49 +127,35 @@ function LoginPage() {
               </div>
             </div>
 
-            <button type="submit" className="btn btn-primary" style={{ width: "100%", padding: "0.75rem", fontSize: "0.95rem", marginTop: "0.5rem" }}>
+            <button
+              type="submit"
+              className="btn btn-primary"
+              style={{ width: "100%", padding: "0.75rem", fontSize: "0.95rem", marginTop: "0.5rem" }}
+            >
               <span>Masuk ke Sistem</span>
               <ArrowRight size={18} />
             </button>
           </form>
 
-          {/* Quick Demo Access Bar */}
-          <div style={{ marginTop: "1.75rem", paddingTop: "1.25rem", borderTop: "1px solid var(--border-color)" }}>
-            <div style={{ fontSize: "0.75rem", fontWeight: 700, color: "var(--text-secondary)", textAlign: "center", marginBottom: "0.75rem", textTransform: "uppercase", letterSpacing: "0.05em" }}>
-              ⚡ Quick Access Demo Portofolio
-            </div>
-
-            <div style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
-              <button
-                type="button"
-                className="btn btn-secondary btn-sm"
-                onClick={() => handleQuickLogin("admin")}
-                style={{ justifyContent: "flex-start", padding: "0.55rem 0.75rem" }}
-              >
-                <CheckCircle2 size={14} color="var(--primary)" />
-                <span style={{ fontWeight: 600 }}>Login sebagai Admin Pidsus</span>
-              </button>
-
-              <button
-                type="button"
-                className="btn btn-secondary btn-sm"
-                onClick={() => handleQuickLogin("kajari")}
-                style={{ justifyContent: "flex-start", padding: "0.55rem 0.75rem" }}
-              >
-                <CheckCircle2 size={14} color="var(--accent-gold)" />
-                <span style={{ fontWeight: 600 }}>Login sebagai Kajari (Executive View)</span>
-              </button>
-
-              <button
-                type="button"
-                className="btn btn-secondary btn-sm"
-                onClick={() => handleQuickLogin("penyidik")}
-                style={{ justifyContent: "flex-start", padding: "0.55rem 0.75rem" }}
-              >
-                <CheckCircle2 size={14} color="#3b82f6" />
-                <span style={{ fontWeight: 600 }}>Login sebagai Ketua Tim Penyidik</span>
-              </button>
-            </div>
+          {/* Guest Login Divider & Button */}
+          <div style={{ marginTop: "1.75rem", paddingTop: "1.25rem", borderTop: "1px solid var(--border-color)", textAlign: "center" }}>
+            <button
+              type="button"
+              className="btn btn-outline"
+              onClick={handleGuestLogin}
+              style={{
+                width: "100%",
+                padding: "0.625rem",
+                borderRadius: "10px",
+                borderColor: "#cbd5e1",
+                color: "var(--text-secondary)",
+                fontSize: "0.85rem",
+                fontWeight: 600,
+              }}
+            >
+              <UserCheck size={16} color="var(--primary)" />
+              <span>Masuk sebagai Tamu (Lihat Demo Aplikasi)</span>
+            </button>
           </div>
         </div>
       </div>

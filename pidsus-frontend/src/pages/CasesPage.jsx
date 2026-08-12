@@ -1,10 +1,12 @@
 import { useEffect, useState } from "react";
 import { Plus, Search, Filter, Eye, Trash2, ShieldAlert } from "lucide-react";
 import { getCases, createCase, deleteCase } from "../api/caseService";
+import { useAuth } from "../context/AuthContext";
 import CaseDetailModal from "../components/CaseDetailModal";
 import CaseFormModal from "../components/CaseFormModal";
 
 function CasesPage() {
+  const { user } = useAuth();
   const [cases, setCases] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
@@ -74,10 +76,12 @@ function CasesPage() {
           </p>
         </div>
 
-        <button className="btn btn-primary" onClick={() => setShowFormModal(true)}>
-          <Plus size={16} />
-          <span>Register Perkara Baru</span>
-        </button>
+        {user?.canRegister && (
+          <button className="btn btn-primary" onClick={() => setShowFormModal(true)}>
+            <Plus size={16} />
+            <span>Register Perkara Baru</span>
+          </button>
+        )}
       </div>
 
       {/* Filter & Search Bar */}
