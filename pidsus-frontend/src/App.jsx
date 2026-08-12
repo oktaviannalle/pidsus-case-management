@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route, Navigate } from "react";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import Sidebar from "./components/Sidebar";
 import Navbar from "./components/Navbar";
 import DashboardPage from "./pages/DashboardPage";
