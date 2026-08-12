@@ -101,5 +101,5 @@ Backend berjalan di `http://localhost:5118`, Swagger UI di `/swagger`.
 ## 👨‍💻 Penulis & Kontak
 
 **Oktavian Alle**  
-[LinkedIn](https://linkedin.com/in/oktaviannalle) · oktaviannalle@gmail.com  
+[LinkedIn](https://linkedin.com/in/oktavianalle) · oktaviannalle@gmail.com  
 *Rekonstruksi Pengalaman Magang Seksi Pidsus, Kejaksaan Negeri Salatiga*
