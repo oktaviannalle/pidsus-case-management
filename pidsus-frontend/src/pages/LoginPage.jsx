@@ -1,31 +1,41 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { User, Lock, ArrowRight, UserCheck, Shield } from "lucide-react";
+import { User, Lock, ArrowRight, UserCheck, AlertCircle, Info } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
 
 function LoginPage() {
-  const { login, DEMO_USERS } = useAuth();
+  const { authenticate, loginGuest, DEMO_USERS } = useAuth();
   const navigate = useNavigate();
 
   const [selectedRole, setSelectedRole] = useState("admin");
   const [username, setUsername] = useState(DEMO_USERS.admin.nip);
-  const [password, setPassword] = useState("••••••••");
+  const [password, setPassword] = useState("");
+  const [errorMsg, setErrorMsg] = useState("");
+  const [showHint, setShowHint] = useState(true);
 
   // Sync NIP input when role dropdown changes
   useEffect(() => {
     if (DEMO_USERS[selectedRole]) {
       setUsername(DEMO_USERS[selectedRole].nip);
+      setPassword(""); // Clear password so user must enter valid password
+      setErrorMsg("");
     }
   }, [selectedRole, DEMO_USERS]);
 
   const handleCustomLogin = (e) => {
     e.preventDefault();
-    login(selectedRole);
-    navigate("/dashboard");
+    setErrorMsg("");
+
+    const result = authenticate(username, password, selectedRole);
+    if (result.success) {
+      navigate("/dashboard");
+    } else {
+      setErrorMsg(result.error);
+    }
   };
 
   const handleGuestLogin = () => {
-    login("tamu");
+    loginGuest();
     navigate("/dashboard");
   };
 
@@ -82,6 +92,28 @@ function LoginPage() {
 
         {/* Login Body Form */}
         <div style={{ padding: "2rem" }}>
+          {/* Error Banner */}
+          {errorMsg && (
+            <div
+              style={{
+                backgroundColor: "#fef2f2",
+                border: "1px solid #fecaca",
+                color: "#dc2626",
+                padding: "0.75rem 1rem",
+                borderRadius: "10px",
+                fontSize: "0.825rem",
+                fontWeight: 600,
+                display: "flex",
+                alignItems: "center",
+                gap: "0.5rem",
+                marginBottom: "1.25rem",
+              }}
+            >
+              <AlertCircle size={18} style={{ flexShrink: 0 }} />
+              <span>{errorMsg}</span>
+            </div>
+          )}
+
           <form onSubmit={handleCustomLogin}>
             <div className="form-group">
               <label className="form-label">Pilih Peran Akses / Jabatan</label>
@@ -91,8 +123,8 @@ function LoginPage() {
                 onChange={(e) => setSelectedRole(e.target.value)}
                 style={{ fontWeight: 600, color: "var(--primary-dark)" }}
               >
-                <option value="kajari">Kepala Kejaksaan Negeri (Kajari) - Akses Seluruh Halaman</option>
                 <option value="admin">Admin Seksi Pidsus - Akses Dashboard, Perkara & BB</option>
+                <option value="kajari">Kepala Kejaksaan Negeri (Kajari) - Akses Seluruh Halaman</option>
                 <option value="penyidik">Ketua Tim Penyidik P-16 - Akses Dashboard, Perkara & BB</option>
               </select>
             </div>
@@ -104,6 +136,7 @@ function LoginPage() {
                 <input
                   type="text"
                   required
+                  placeholder="Masukkan NIP resmi..."
                   className="form-control"
                   style={{ paddingLeft: "2.35rem" }}
                   value={username}
@@ -119,6 +152,7 @@ function LoginPage() {
                 <input
                   type="password"
                   required
+                  placeholder="Masukkan Kata Sandi..."
                   className="form-control"
                   style={{ paddingLeft: "2.35rem" }}
                   value={password}
@@ -137,8 +171,43 @@ function LoginPage() {
             </button>
           </form>
 
+          {/* Credentials Info Helper for Testing / Recruiters */}
+          <div
+            style={{
+              marginTop: "1.25rem",
+              backgroundColor: "#f8fafc",
+              border: "1px solid #e2e8f0",
+              borderRadius: "10px",
+              padding: "0.875rem",
+              fontSize: "0.75rem",
+              color: "var(--text-secondary)",
+            }}
+          >
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", fontWeight: 700, color: "var(--text-primary)", marginBottom: "0.35rem" }}>
+              <div style={{ display: "flex", alignItems: "center", gap: "0.35rem" }}>
+                <Info size={14} color="var(--primary)" />
+                <span>Kredensial Akses Uji Coba:</span>
+              </div>
+              <button
+                type="button"
+                onClick={() => setShowHint(!showHint)}
+                style={{ background: "none", border: "none", color: "var(--primary)", fontSize: "0.7rem", cursor: "pointer", fontWeight: 600 }}
+              >
+                {showHint ? "Sembunyikan" : "Tampilkan"}
+              </button>
+            </div>
+
+            {showHint && (
+              <div style={{ display: "flex", flexDirection: "column", gap: "0.25rem", fontFamily: "var(--font-mono)", marginTop: "0.35rem" }}>
+                <div>• <strong>Admin:</strong> admin123</div>
+                <div>• <strong>Kajari:</strong> kajari123</div>
+                <div>• <strong>Penyidik:</strong> penyidik123</div>
+              </div>
+            )}
+          </div>
+
           {/* Guest Login Divider & Button */}
-          <div style={{ marginTop: "1.75rem", paddingTop: "1.25rem", borderTop: "1px solid var(--border-color)", textAlign: "center" }}>
+          <div style={{ marginTop: "1.25rem", paddingTop: "1rem", borderTop: "1px solid var(--border-color)", textAlign: "center" }}>
             <button
               type="button"
               className="btn btn-outline"

@@ -7,7 +7,8 @@ export const DEMO_USERS = {
     key: "kajari",
     name: "Dr. Heru Prasetyo, S.H., M.H.",
     role: "Kepala Kejaksaan Negeri Salatiga (Kajari)",
-    nip: "19740512 199803 1 002",
+    nip: "197405121998031002",
+    password: "kajari123",
     avatarRole: "KAJARI",
     allowedPages: ["/dashboard", "/cases", "/evidences", "/reports"],
     canRegister: true,
@@ -16,7 +17,8 @@ export const DEMO_USERS = {
     key: "admin",
     name: "Oktavian Alle, S.H.",
     role: "Admin Seksi Pidsus",
-    nip: "19971015 202102 1 001",
+    nip: "199710152021021001",
+    password: "admin123",
     avatarRole: "ADMIN",
     allowedPages: ["/dashboard", "/cases", "/evidences"],
     canRegister: true,
@@ -25,7 +27,8 @@ export const DEMO_USERS = {
     key: "penyidik",
     name: "Wahyu Hidayat, S.H., M.H.",
     role: "Ketua Tim Penyidik P-16 A",
-    nip: "19820815 200604 1 005",
+    nip: "198208152006041005",
+    password: "penyidik123",
     avatarRole: "PENYIDIK",
     allowedPages: ["/dashboard", "/cases", "/evidences"],
     canRegister: false,
@@ -35,6 +38,7 @@ export const DEMO_USERS = {
     name: "Tamu / Demo Viewer",
     role: "Pengunjung Demo Aplikasi",
     nip: "GUEST-DEMO-VISITOR",
+    password: "",
     avatarRole: "TAMU",
     allowedPages: ["/dashboard", "/cases"],
     canRegister: false,
@@ -47,10 +51,34 @@ export const AuthProvider = ({ children }) => {
     return saved ? JSON.parse(saved) : DEMO_USERS.admin;
   });
 
-  const login = (roleKey = "admin") => {
-    const selectedUser = DEMO_USERS[roleKey] || DEMO_USERS.admin;
-    setUser(selectedUser);
-    localStorage.setItem("pidsus_user", JSON.stringify(selectedUser));
+  const authenticate = (inputNip, inputPassword, roleKey) => {
+    const cleanNip = (inputNip || "").replace(/\s+/g, "");
+    
+    // Direct role matching
+    const targetUser = DEMO_USERS[roleKey];
+    if (targetUser && targetUser.nip.replace(/\s+/g, "") === cleanNip && targetUser.password === inputPassword) {
+      setUser(targetUser);
+      localStorage.setItem("pidsus_user", JSON.stringify(targetUser));
+      return { success: true };
+    }
+
+    // Check all roles if NIP & password match any credential
+    const matchedUser = Object.values(DEMO_USERS).find(
+      (u) => u.nip.replace(/\s+/g, "") === cleanNip && u.password === inputPassword
+    );
+
+    if (matchedUser) {
+      setUser(matchedUser);
+      localStorage.setItem("pidsus_user", JSON.stringify(matchedUser));
+      return { success: true };
+    }
+
+    return { success: false, error: "NIP atau Kata Sandi yang Anda masukkan salah. Silakan periksa kembali." };
+  };
+
+  const loginGuest = () => {
+    setUser(DEMO_USERS.tamu);
+    localStorage.setItem("pidsus_user", JSON.stringify(DEMO_USERS.tamu));
   };
 
   const logout = () => {
@@ -59,7 +87,7 @@ export const AuthProvider = ({ children }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ user, login, logout, DEMO_USERS }}>
+    <AuthContext.Provider value={{ user, authenticate, loginGuest, logout, DEMO_USERS }}>
       {children}
     </AuthContext.Provider>
   );
