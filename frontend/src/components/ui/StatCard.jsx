@@ -1,61 +1,107 @@
-import { TrendingUp, ArrowUpRight } from "lucide-react";
+import { ArrowUpRight, TrendingDown, Minus } from "lucide-react";
 
 function StatCard({ title, value, icon: Icon, color = "primary", subtitle, trend }) {
   const colorMap = {
-    primary: { bg: "#ecfdf5", border: "#a7f3d0", text: "#047857" },
-    gold: { bg: "#fffbeb", border: "#fde68a", text: "#d97706" },
-    blue: { bg: "#eff6ff", border: "#bfdbfe", text: "#2563eb" },
-    indigo: { bg: "#e0e7ff", border: "#c7d2fe", text: "#4f46e5" },
-    red: { bg: "#fef2f2", border: "#fecaca", text: "#dc2626" },
+    primary: { bar: "#1e7a3e", iconBg: "#eaf4ee", iconColor: "#1e7a3e", border: "#b8d9c3" },
+    gold:    { bar: "#c9a227", iconBg: "#fdf8ec", iconColor: "#c9a227", border: "#e8d5a0" },
+    blue:    { bar: "#1d4ed8", iconBg: "#eff6ff", iconColor: "#1d4ed8", border: "#bfdbfe" },
+    indigo:  { bar: "#4f46e5", iconBg: "#f5f3ff", iconColor: "#4f46e5", border: "#ddd6fe" },
+    red:     { bar: "#dc2626", iconBg: "#fff1f2", iconColor: "#dc2626", border: "#fecaca" },
   };
 
   const scheme = colorMap[color] || colorMap.primary;
 
   return (
     <div
-      className="card"
       style={{
-        display: "flex",
-        flexDirection: "column",
-        justifyContent: "space-between",
-        position: "relative",
+        backgroundColor: "#ffffff",
+        borderRadius: "10px",
+        border: "1px solid var(--border-color)",
+        boxShadow: "var(--shadow-sm)",
         overflow: "hidden",
+        transition: "box-shadow 0.18s ease",
       }}
+      onMouseEnter={(e) => { e.currentTarget.style.boxShadow = "var(--shadow-md)"; }}
+      onMouseLeave={(e) => { e.currentTarget.style.boxShadow = "var(--shadow-sm)"; }}
     >
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "1rem" }}>
-        <div>
-          <span style={{ fontSize: "0.8rem", fontWeight: 600, color: "var(--text-secondary)", textTransform: "uppercase", letterSpacing: "0.03em" }}>
+      {/* Colored top accent */}
+      <div style={{ height: "3px", backgroundColor: scheme.bar }} />
+
+      <div style={{ padding: "1.25rem 1.375rem 1.25rem" }}>
+        {/* Title row */}
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "0.875rem" }}>
+          <span
+            style={{
+              fontSize: "0.68rem",
+              fontWeight: 700,
+              color: "var(--text-muted)",
+              textTransform: "uppercase",
+              letterSpacing: "0.06em",
+              lineHeight: 1.4,
+              maxWidth: "140px",
+            }}
+          >
             {title}
           </span>
-          <h3 style={{ fontSize: "1.65rem", fontWeight: 800, marginTop: "0.25rem", color: "var(--text-primary)" }}>
-            {value}
-          </h3>
+          <div
+            style={{
+              width: "38px",
+              height: "38px",
+              borderRadius: "8px",
+              backgroundColor: scheme.iconBg,
+              border: `1px solid ${scheme.border}`,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              color: scheme.iconColor,
+              flexShrink: 0,
+            }}
+          >
+            {Icon && <Icon size={19} />}
+          </div>
         </div>
 
+        {/* Value */}
         <div
           style={{
-            width: "48px",
-            height: "48px",
-            borderRadius: "12px",
-            backgroundColor: scheme.bg,
-            border: `1px solid ${scheme.border}`,
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            color: scheme.text,
-            flexShrink: 0,
+            fontSize: "1.65rem",
+            fontWeight: 800,
+            color: "var(--text-primary)",
+            lineHeight: 1.1,
+            letterSpacing: "-0.02em",
+            marginBottom: "0.875rem",
           }}
         >
-          {Icon && <Icon size={24} />}
+          {value}
         </div>
-      </div>
 
-      {subtitle && (
-        <div style={{ display: "flex", alignItems: "center", gap: "0.375rem", fontSize: "0.75rem", color: "var(--text-secondary)", paddingTop: "0.5rem", borderTop: "1px solid #f1f5f9" }}>
-          {trend && <ArrowUpRight size={14} color="var(--primary)" />}
-          <span>{subtitle}</span>
-        </div>
-      )}
+        {/* Footer */}
+        {subtitle && (
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: "0.375rem",
+              paddingTop: "0.625rem",
+              borderTop: "1px solid #f0f4f1",
+              fontSize: "0.7rem",
+              color: "var(--text-muted)",
+            }}
+          >
+            {trend === true && (
+              <span style={{ display: "inline-flex", alignItems: "center", gap: "2px", padding: "1px 5px", borderRadius: "3px", background: "#f0fdf4", color: "#15803d", fontSize: "0.65rem", fontWeight: 700 }}>
+                <ArrowUpRight size={10} /> Naik
+              </span>
+            )}
+            {trend === false && (
+              <span style={{ display: "inline-flex", alignItems: "center", gap: "2px", padding: "1px 5px", borderRadius: "3px", background: "#fff1f2", color: "#dc2626", fontSize: "0.65rem", fontWeight: 700 }}>
+                <TrendingDown size={10} /> Turun
+              </span>
+            )}
+            <span>{subtitle}</span>
+          </div>
+        )}
+      </div>
     </div>
   );
 }
